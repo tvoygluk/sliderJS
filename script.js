@@ -1,53 +1,54 @@
 'use strict';
 
 var IMAGES = ['img/photo1.jpg','img/photo2.jpg','img/photo3.jpg', 'img/photo4.jpeg', 'img/photo5.jpeg'];
-var SLIDE_INDEX = IMAGES.length - 1;
-var globalCounter = 0;
-// TODO: Наладить начальные значения
+var BACK_TIMER = 950;
+var FRONT_TIMER = 100;
+var backCounter = IMAGES.length - 1;
+var frontCounter = 0;
 
 var createSlider = function (block, currentIndex) {
     var currentImg = document.createElement('img');
     currentImg.classList.add('currentImg');
     currentImg.src = IMAGES[currentIndex];
-
     block.appendChild(currentImg);
 };
 
 var back = document.querySelector('.back');
-createSlider(back, SLIDE_INDEX);
+createSlider(back, backCounter);
+
 var front = document.querySelector('.front');
-createSlider(front, globalCounter);
+createSlider(front, frontCounter);
+
+var createBackSlider = function () {
+    back.innerHTML = '';
+    createSlider(back, backCounter);
+};
+
+var createFrontSlider = function () {
+    front.innerHTML = '';
+    createSlider(front, frontCounter);
+};
 
 var right = document.querySelector('.right');
 var onRightClick = function () {
-    globalCounter = SLIDE_INDEX;
-
-    SLIDE_INDEX++;
-    if (SLIDE_INDEX > IMAGES.length - 1) {
-        SLIDE_INDEX = 0;
-    } 
-
-    front.innerHTML = '';
-    createSlider(front, SLIDE_INDEX);
-
-    back.innerHTML = '';
-    createSlider(back, globalCounter);
+    backCounter = frontCounter;
+    setTimeout(createBackSlider, BACK_TIMER);
+    frontCounter++;
+    if (frontCounter > IMAGES.length - 1) {
+        frontCounter = 0;
+    }
+    setTimeout(createFrontSlider, FRONT_TIMER);
 };
 right.addEventListener('click',onRightClick);
 
 var left = document.querySelector('.left');
 var onLeftClick = function () {
-    globalCounter = SLIDE_INDEX;
-
-    SLIDE_INDEX--;
-    if (SLIDE_INDEX < 0) {
-        SLIDE_INDEX = IMAGES.length - 1;
+    backCounter = frontCounter;
+    setTimeout(createBackSlider, BACK_TIMER);
+    frontCounter--;
+    if (frontCounter < 0) {
+        frontCounter = IMAGES.length - 1;
     }
-
-    front.innerHTML = '';
-    createSlider(front, SLIDE_INDEX);
-
-    back.innerHTML = '';
-    createSlider(back, globalCounter);
+    setTimeout(createFrontSlider, FRONT_TIMER);
 };
 left.addEventListener('click', onLeftClick);
